@@ -1,0 +1,58 @@
+---
+const techStack = [
+  {
+    category: "Backend",
+    items: [
+      { name: "Golang", description: "Primary, production-ready projects." },
+      { name: "Python", description: "Scripting and API development." },
+      { name: "Node.js", description: "Backend services and tooling." }
+    ]
+  },
+  {
+    category: "Frontend",
+    items: [
+      { name: "Next.js / React", description: "Primary frontend frameworks." },
+      { name: "TypeScript", description: "Used across all projects." },
+      { name: "Tailwind CSS", description: "Utility-first styling." },
+      { name: "Vanilla CSS", description: "Deep understanding of core styling." }
+    ]
+  },
+  {
+    category: "Database",
+    items: [
+      { name: "PostgreSQL", description: "Primary database, schema design and indexing." },
+      { name: "Redis", description: "Caching and fast data retrieval." },
+      { name: "MongoDB", description: "NoSQL document database." }
+    ]
+  },
+  {
+    category: "DevOps",
+    items: [
+      { name: "Docker / docker-compose", description: "Containerization and orchestration." },
+      { name: "GitHub Actions", description: "Continuous Integration pipelines." },
+      { name: "Platforms", description: "Fly.io, Vercel, Railway for deployment." }
+    ]
+  }
+];
+---
+
+<section id="tech-stack" class="section">
+  <div class="section-header">
+    <h2>Tech Stack</h2>
+  </div>
+  <div class="tech-grid">
+    {techStack.map((group) => (
+      <div class="tech-category">
+        <h3>{group.category}</h3>
+        <div class="tech-list">
+          {group.items.map((item) => (
+            <div class="tech-item">
+              <h4>{item.name}</h4>
+              {item.description && <p>{item.description}</p>}
+            </div>
+          ))}
+        </div>
+      </div>
+    ))}
+  </div>
+</section>
