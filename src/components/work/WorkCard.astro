@@ -1,0 +1,157 @@
+---
+import type { ProjectData } from '../../types/portfolio';
+
+export interface Props {
+  project: ProjectData;
+}
+
+const { project } = Astro.props;
+
+const hasValidHomepage = Boolean(project.homepage && typeof project.homepage === 'string' && project.homepage.trim().length > 0);
+
+const githubIcon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>`;
+const externalIcon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>`;
+---
+
+<article class="project-card" data-project={JSON.stringify(project)}>
+  <div class={`project-image ${project.colorClass}`}></div>
+  <div class="project-info">
+    <h3>{project.name}</h3>
+    <p class="desc">{project.description}</p>
+    
+    <div class="project-tags">
+      {project.techTags.map((tag: string) => (
+        <span class={`tag ${tag === 'Go' || tag === 'JavaScript' || tag === 'TypeScript' || tag === 'React' ? 'tag-lang' : ''}`}>{tag}</span>
+      ))}
+    </div>
+
+    <div class="project-links">
+      {hasValidHomepage && (
+        <a href={project.homepage} target="_blank" rel="noopener noreferrer" class="btn-link" aria-label={`Live Demo for ${project.name}`}>
+          <span class="icon" set:html={externalIcon} /> Live Demo
+        </a>
+      )}
+      <a href={project.html_url} target="_blank" rel="noopener noreferrer" class="btn-link" aria-label={`GitHub Repository for ${project.name}`}>
+        <span class="icon" set:html={githubIcon} /> GitHub
+      </a>
+    </div>
+  </div>
+</article>
+
+<style>
+  .project-card {
+    cursor: pointer;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: transform 0.3s ease, border-color 0.3s ease, opacity 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-height: 440px;
+  }
+  
+  .project-card:hover {
+    transform: translateY(-5px);
+    border-color: rgba(255, 255, 255, 0.15);
+  }
+
+  .project-image {
+    width: 100%;
+    aspect-ratio: 16/9;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .bg-cyan { background: linear-gradient(135deg, #005a78, #00ADD8); }
+  .bg-blue { background: linear-gradient(135deg, #1b4573, #3178C6); }
+  .bg-yellow { background: linear-gradient(135deg, #8a7000, #FFD43B); }
+  .bg-purple { background: linear-gradient(135deg, #4c1d95, #8b5cf6); }
+  .bg-amber { background: linear-gradient(135deg, #7c3a00, #f59e0b); }
+  .bg-default { background: linear-gradient(135deg, #333, #555); }
+
+  .project-info {
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+  }
+
+  .project-info h3 {
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    color: var(--text-main);
+  }
+
+  .project-info p.desc {
+    font-size: 0.92rem;
+    color: var(--text-secondary);
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    margin-bottom: 1rem;
+    line-height: 1.5;
+    min-height: 4.1rem;
+  }
+
+  .project-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: auto;
+  }
+
+  .tag {
+    background: rgba(255, 255, 255, 0.08);
+    padding: 0.2rem 0.6rem;
+    border-radius: 50px;
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+  }
+
+  .tag-lang {
+    background: rgba(255, 255, 255, 0.18);
+    color: var(--text-main);
+    font-weight: 600;
+  }
+
+  .project-links {
+    display: flex;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+  }
+
+  .btn-link {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 6px;
+    font-size: 0.85rem;
+    transition: background 0.2s ease, color 0.2s ease;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: var(--text-main);
+  }
+
+  .btn-link:hover {
+    background: rgba(255, 255, 255, 0.1);
+  }
+
+  .icon {
+    width: 16px;
+    height: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .icon svg {
+    width: 100%;
+    height: 100%;
+    fill: currentColor;
+  }
+</style>

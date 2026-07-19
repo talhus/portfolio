@@ -1,5 +1,5 @@
 {
-  "name": "media-kit-go",
+  "name": "talha-bay-portfolio",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -11,7 +11,9 @@
     "check": "astro check"
   },
   "devDependencies": {
+    "@astrojs/check": "^0.9.9",
     "@types/three": "^0.185.0",
+    "typescript": "^5.9.3",
     "vite": "^7.2.4"
   },
   "dependencies": {

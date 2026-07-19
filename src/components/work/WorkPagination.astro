@@ -1,0 +1,129 @@
+---
+---
+
+<div id="pagination-container" class="pagination-container">
+  <button id="prev-page" class="page-btn" aria-label="Previous page">
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+    <span>Prev</span>
+  </button>
+  <div id="page-numbers" class="page-numbers"></div>
+  <button id="next-page" class="page-btn" aria-label="Next page">
+    <span>Next</span>
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+  </button>
+</div>
+
+<style>
+  /* Premium Glassmorphic Pagination Bar */
+  .pagination-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    margin-top: 3.5rem;
+    padding: 0.5rem 0.75rem;
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(12px) saturate(180%);
+    -webkit-backdrop-filter: blur(12px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 9999px;
+    width: fit-content;
+    margin-left: auto;
+    margin-right: auto;
+    box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  }
+
+  .page-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.5rem 1rem;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 9999px;
+    color: var(--text-main);
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .page-btn svg {
+    transition: transform 0.3s ease;
+  }
+
+  .page-btn:hover:not(:disabled) {
+    background: rgba(255, 255, 255, 0.12);
+    border-color: rgba(255, 255, 255, 0.2);
+    color: #ffffff;
+  }
+
+  .page-btn#prev-page:hover:not(:disabled) svg {
+    transform: translateX(-3px);
+  }
+
+  .page-btn#next-page:hover:not(:disabled) svg {
+    transform: translateX(3px);
+  }
+
+  .page-btn:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+  }
+
+  /* Dynamic Pagination Buttons Styling (Global Scoped for JS rendered DOM) */
+  :global(.page-numbers) {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    padding: 0 0.5rem;
+  }
+
+  :global(.num-btn) {
+    position: relative;
+    background: transparent !important;
+    border: none !important;
+    outline: none !important;
+    color: rgba(255, 255, 255, 0.4) !important;
+    font-size: 0.9rem !important;
+    font-weight: 600 !important;
+    font-family: monospace, var(--font-family) !important;
+    letter-spacing: 0.08em !important;
+    cursor: pointer;
+    padding: 0.4rem 0.25rem !important;
+    transition: color 0.3s ease !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    height: auto !important;
+    min-width: auto !important;
+  }
+
+  :global(.num-btn:hover:not(.active)) {
+    color: rgba(255, 255, 255, 0.85) !important;
+  }
+
+  :global(.num-btn::after) {
+    content: '';
+    position: absolute;
+    bottom: -3px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: #00ADD8;
+    box-shadow: 0 0 10px rgba(0, 173, 216, 0.9);
+    border-radius: 2px;
+    transform: scaleX(0);
+    transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.35s ease;
+    opacity: 0;
+  }
+
+  :global(.num-btn.active) {
+    color: #ffffff !important;
+    font-weight: 700 !important;
+  }
+
+  :global(.num-btn.active::after) {
+    transform: scaleX(1);
+    opacity: 1;
+  }
+</style>
