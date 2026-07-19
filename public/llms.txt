@@ -1,6 +1,6 @@
 # Talha Bay - Software Developer
 
-> Fullstack developer specialized in engineering robust, high-performance backend systems with Golang and TypeScript. 3+ years of experience building and shipping production-ready applications. Based in Finland.
+> Fullstack developer specialized in engineering robust, high-performance backend systems with Golang and TypeScript. 3+ years of experience building and shipping production-ready applications.
 
 ## Core Specializations & Tech Stack
 - **Primary Backend**: Golang (Go), Clean Architecture, Concurrency, Pessimistic Locking, Idempotency, REST APIs, Fiber, net/http
@@ -18,4 +18,4 @@
 ## Contact & Profiles
 - **GitHub**: https://github.com/talhus
 - **Email**: talhusdev@gmail.com
-- **Portfolio**: https://portfolio-taupe-seven-94.vercel.app
+- **Portfolio**: https://talhus.dev
