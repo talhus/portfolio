@@ -1,0 +1,21 @@
+# Talha Bay - Software Developer
+
+> Fullstack developer specialized in engineering robust, high-performance backend systems with Golang and TypeScript. 3+ years of experience building and shipping production-ready applications. Based in Finland.
+
+## Core Specializations & Tech Stack
+- **Primary Backend**: Golang (Go), Clean Architecture, Concurrency, Pessimistic Locking, Idempotency, REST APIs, Fiber, net/http
+- **Frontend Frameworks**: TypeScript, React, Next.js, Astro, Tailwind CSS, Vanilla CSS
+- **Databases**: PostgreSQL (schema design & indexing), Redis (caching), MongoDB
+- **DevOps & Tooling**: Docker, Docker Compose, GitHub Actions, CI/CD, Fly.io, Vercel, Railway
+
+## Featured Projects
+- **tyr-fintech**: A secure, high-performance Fintech Digital Wallet platform built with Go (Clean Architecture, Pessimistic Locking, Idempotency) and React (Vite, Tailwind CSS v4). Dockerized & CI/CD enabled.
+- **taskflow**: High-concurrency task management backend written in Go.
+- **microService-commerce**: E-commerce microservices architecture implemented in Golang.
+- **go-shorty**: High-performance URL shortener service built with Go.
+- **micro-ecom**: Microservice e-commerce backend built with Go.
+
+## Contact & Profiles
+- **GitHub**: https://github.com/talhus
+- **Email**: talhusdev@gmail.com
+- **Portfolio**: https://portfolio-taupe-seven-94.vercel.app

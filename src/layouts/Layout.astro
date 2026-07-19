@@ -7,12 +7,28 @@ export interface Props {
 
 const {
   title,
-  description = "Talha Bay - Software Developer based in Finland.",
+  description = "Talha Bay - Software Developer based in Finland specializing in Golang, TypeScript, and high-performance backend applications.",
   image = "/favicon.svg",
 } = Astro.props;
 
 import "../styles/global.css";
 import Analytics from "@vercel/analytics/astro";
+
+const siteUrl = Astro.site ? Astro.site.toString() : Astro.url.origin;
+const canonicalURL = new URL(Astro.url.pathname, siteUrl);
+const ogImageURL = new URL(image, siteUrl);
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": "Talha Bay",
+  "url": siteUrl,
+  "jobTitle": "Software Developer",
+  "sameAs": [
+    "https://github.com/talhus"
+  ],
+  "knowsAbout": ["Golang", "Go", "TypeScript", "React", "Next.js", "PostgreSQL", "Docker"]
+};
 ---
 
 <!doctype html>
@@ -26,29 +42,41 @@ import Analytics from "@vercel/analytics/astro";
     <title>{title}</title>
     <meta name="title" content={title} />
     <meta name="description" content={description} />
+    <meta name="keywords" content="Talha Bay, Software Developer, Fullstack Developer, Golang, Go Developer, TypeScript, React, Astro, Backend Engineer, Finland Developer, Web Developer Portfolio" />
+    <meta name="author" content="Talha Bay" />
+    <meta name="robots" content="index, follow" />
+    <meta name="theme-color" content="#111111" />
 
-    <!-- Open Graph / Facebook -->
+    <!-- Canonical URL -->
+    <link rel="canonical" href={canonicalURL} />
+
+    <!-- Open Graph / Facebook / LinkedIn -->
     <meta property="og:type" content="website" />
-    <meta property="og:url" content={Astro.url} />
+    <meta property="og:site_name" content="Talha Bay Portfolio" />
+    <meta property="og:url" content={canonicalURL} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
-    <meta property="og:image" content={new URL(image, Astro.url)} />
+    <meta property="og:image" content={ogImageURL} />
+    <meta property="og:locale" content="en_US" />
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image" />
-    <meta property="twitter:url" content={Astro.url} />
+    <meta property="twitter:url" content={canonicalURL} />
     <meta property="twitter:title" content={title} />
     <meta property="twitter:description" content={description} />
-    <meta property="twitter:image" content={new URL(image, Astro.url)} />
+    <meta property="twitter:image" content={ogImageURL} />
 
-    <link rel="canonical" href={Astro.url} />
-
+    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap"
       rel="stylesheet"
     />
+
+    <!-- JSON-LD Structured Data for Search Engine Rich Snippets -->
+    <script is:inline type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+
     <Analytics />
   </head>
   <body>

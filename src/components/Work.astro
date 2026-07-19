@@ -1,10 +1,5 @@
 ---
-import WorkCard from './work/WorkCard.astro';
-import WorkModal from './work/WorkModal.astro';
-import WorkPagination from './work/WorkPagination.astro';
-import type { GitHubRepo, ProjectData } from '../types/portfolio';
-
-let projects: ProjectData[] = [];
+let projects: any[] = [];
 try {
   const headers: Record<string, string> = {
     'User-Agent': 'talhus-portfolio'
@@ -17,27 +12,12 @@ try {
 
   const res = await fetch('https://api.github.com/users/talhus/repos?per_page=100&sort=updated', { headers });
   if (res.ok) {
-    const repos: GitHubRepo[] = await res.json();
+    const repos = await res.json();
     if (Array.isArray(repos)) {
-      const filtered = repos.filter((repo) => repo.topics && repo.topics.includes('portfolio'));
+      const filtered = repos.filter((repo: any) => repo.topics && repo.topics.includes('portfolio'));
       
-      const sorted = filtered.sort((a, b) => {
-        return new Date(b.pushed_at || b.updated_at || 0).getTime() - new Date(a.pushed_at || a.updated_at || 0).getTime();
-      });
-
-      projects = sorted.map((project) => {
-        const techTags = getProjectTechTags(project);
-        const colorClass = getTechColorClass(techTags);
-        const desc = project.description || `${techTags.join(' / ')} project built by Talha Bay.`;
-
-        return {
-          name: project.name,
-          description: desc,
-          techTags: techTags,
-          homepage: project.homepage,
-          html_url: project.html_url,
-          colorClass: colorClass
-        };
+      projects = filtered.sort((a: any, b: any) => {
+        return new Date(b.pushed_at || b.updated_at).getTime() - new Date(a.pushed_at || a.updated_at).getTime();
       });
     }
   } else {
@@ -47,7 +27,7 @@ try {
   console.error('Error fetching repositories from GitHub:', e);
 }
 
-function getProjectTechTags(project: GitHubRepo): string[] {
+const getProjectTechTags = (project: any): string[] => {
   const tagsSet = new Set<string>();
   const topics = (project.topics || []).map((t: string) => t.toLowerCase());
   const lang = (project.language || '').toLowerCase();
@@ -86,32 +66,104 @@ function getProjectTechTags(project: GitHubRepo): string[] {
   }
 
   return Array.from(tagsSet);
-}
+};
 
-function getTechColorClass(techTags: string[]): string {
+const getTechColorClass = (techTags: string[]) => {
   const lower = techTags.map(t => t.toLowerCase());
   if (lower.includes('go')) return 'bg-cyan';
   if (lower.includes('typescript') || lower.includes('react')) return 'bg-blue';
   if (lower.includes('astro')) return 'bg-purple';
   if (lower.includes('javascript')) return 'bg-amber';
   return 'bg-default';
-}
+};
+
+const githubIcon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>`;
+const externalIcon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>`;
 ---
 
 <section id="work" class="section">
   <div class="section-header">
     <h2>Selected Work</h2>
   </div>
-  
   <div class="project-grid" id="project-grid">
-    {projects.map((project) => (
-      <WorkCard project={project} />
-    ))}
+    {projects.map((project: any) => {
+      const techTags = getProjectTechTags(project);
+      const colorClass = getTechColorClass(techTags);
+      const desc = project.description || `${techTags.join(' / ')} project built by Talha Bay.`;
+      
+      return (
+        <article class="project-card" data-project={JSON.stringify({
+          name: project.name,
+          description: desc,
+          techTags: techTags,
+          homepage: project.homepage,
+          html_url: project.html_url,
+          colorClass: colorClass
+        })}>
+          <div class={`project-image ${colorClass}`}>
+          </div>
+          <div class="project-info">
+            <h3>{project.name}</h3>
+            <p class="desc">{desc}</p>
+            
+            <div class="project-tags">
+              {techTags.map((tag: string) => (
+                <span class={`tag ${tag === 'Go' || tag === 'JavaScript' || tag === 'TypeScript' || tag === 'React' ? 'tag-lang' : ''}`}>{tag}</span>
+              ))}
+            </div>
+
+            <div class="project-links">
+              {project.homepage && (
+                <a href={project.homepage} target="_blank" rel="noopener noreferrer" class="btn-link">
+                  <span class="icon" set:html={externalIcon} /> Live Demo
+                </a>
+              )}
+              <a href={project.html_url} target="_blank" rel="noopener noreferrer" class="btn-link">
+                <span class="icon" set:html={githubIcon} /> GitHub
+              </a>
+            </div>
+          </div>
+        </article>
+      );
+    })}
   </div>
 
-  {projects.length > 3 && <WorkPagination />}
+  {projects.length > 3 && (
+    <div id="pagination-container" class="pagination-container">
+      <button id="prev-page" class="page-btn" aria-label="Previous page">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+        <span>Prev</span>
+      </button>
+      <div id="page-numbers" class="page-numbers"></div>
+      <button id="next-page" class="page-btn" aria-label="Next page">
+        <span>Next</span>
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+      </button>
+    </div>
+  )}
 
-  <WorkModal />
+  <!-- Modal -->
+  <div id="project-modal" class="modal-overlay hidden">
+    <div class="modal-content">
+      <button id="close-modal" class="close-btn" aria-label="Close modal">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      </button>
+      <div id="modal-image-container" class="modal-image"></div>
+      <div class="modal-body">
+        <h3 id="modal-title">Project Title</h3>
+        <p id="modal-description">Project Description</p>
+        <div id="modal-tags" class="project-tags modal-tags"></div>
+        <div class="modal-links project-links">
+          <a id="modal-demo" href="#" target="_blank" rel="noopener noreferrer" class="btn-link hidden">
+            <span class="icon" set:html={externalIcon} /> Live Demo
+          </a>
+          <a id="modal-github" href="#" target="_blank" rel="noopener noreferrer" class="btn-link">
+            <span class="icon" set:html={githubIcon} /> GitHub
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
 </section>
 
 <style>
@@ -134,6 +186,319 @@ function getTechColorClass(techTags: string[]): string {
       grid-template-columns: 1fr;
     }
   }
+
+  /* Base card structure with uniform sizing */
+  .project-card {
+    cursor: pointer;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: transform 0.3s ease, border-color 0.3s ease, opacity 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-height: 440px;
+  }
+  
+  .project-card:hover {
+    transform: translateY(-5px);
+    border-color: rgba(255, 255, 255, 0.15);
+  }
+
+  .project-image {
+    width: 100%;
+    aspect-ratio: 16/9;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Gradient Backgrounds */
+  .bg-cyan { background: linear-gradient(135deg, #005a78, #00ADD8); }
+  .bg-blue { background: linear-gradient(135deg, #1b4573, #3178C6); }
+  .bg-yellow { background: linear-gradient(135deg, #8a7000, #FFD43B); }
+  .bg-purple { background: linear-gradient(135deg, #4c1d95, #8b5cf6); }
+  .bg-amber { background: linear-gradient(135deg, #7c3a00, #f59e0b); }
+  .bg-default { background: linear-gradient(135deg, #333, #555); }
+
+  .project-info {
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+  }
+
+  .project-info h3 {
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    color: var(--text-main);
+  }
+
+  .project-info p.desc {
+    font-size: 0.92rem;
+    color: var(--text-secondary);
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    margin-bottom: 1rem;
+    line-height: 1.5;
+    min-height: 4.1rem;
+  }
+
+  .project-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: auto;
+  }
+
+  .modal-tags {
+    margin-top: 1rem;
+  }
+
+  .tag {
+    background: rgba(255, 255, 255, 0.08);
+    padding: 0.2rem 0.6rem;
+    border-radius: 50px;
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+  }
+
+  .tag-lang {
+    background: rgba(255, 255, 255, 0.18);
+    color: var(--text-main);
+    font-weight: 600;
+  }
+
+  .project-links {
+    display: flex;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+  }
+
+  .btn-link {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 6px;
+    font-size: 0.85rem;
+    transition: background 0.2s ease, color 0.2s ease;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: var(--text-main);
+  }
+
+  .btn-link:hover {
+    background: rgba(255, 255, 255, 0.1);
+  }
+
+  .icon {
+    width: 16px;
+    height: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .icon svg {
+    width: 100%;
+    height: 100%;
+    fill: currentColor;
+  }
+
+  /* Premium Glassmorphic Pagination Bar */
+  .pagination-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    margin-top: 3.5rem;
+    padding: 0.5rem 0.75rem;
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(12px) saturate(180%);
+    -webkit-backdrop-filter: blur(12px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 9999px;
+    width: fit-content;
+    margin-left: auto;
+    margin-right: auto;
+    box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  }
+
+  .page-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.5rem 1rem;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 9999px;
+    color: var(--text-main);
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .page-btn svg {
+    transition: transform 0.3s ease;
+  }
+
+  .page-btn:hover:not(:disabled) {
+    background: rgba(255, 255, 255, 0.12);
+    border-color: rgba(255, 255, 255, 0.2);
+    color: #ffffff;
+  }
+
+  .page-btn#prev-page:hover:not(:disabled) svg {
+    transform: translateX(-3px);
+  }
+
+  .page-btn#next-page:hover:not(:disabled) svg {
+    transform: translateX(3px);
+  }
+
+  .page-btn:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+  }
+
+  .page-numbers {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.25rem 0.35rem;
+    background: rgba(0, 0, 0, 0.35);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 9999px;
+  }
+
+  .num-btn {
+    height: 2.1rem;
+    padding: 0 0.85rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #dbcb90;
+    border: 1px solid transparent;
+    border-radius: 9999px;
+    color: var(--text-secondary);
+    font-size: 3rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+
+  }
+  
+
+  .num-btn:hover:not(.active) {
+    color: var(--text-main);
+    background: rgba(255, 255, 255, 0.08);
+  }
+
+  .num-btn.active {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.25);
+    color: #ffffff;
+    font-weight: 700;
+    box-shadow:
+      0 4px 12px rgba(0, 0, 0, 0.5),
+      inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  }
+
+  /* Modal Styles */
+  .modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(5px);
+    z-index: 1000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+    opacity: 1;
+    transition: opacity 0.3s ease;
+  }
+
+  .modal-overlay.hidden {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .modal-content {
+    background: var(--bg-color);
+    width: 100%;
+    max-width: 800px;
+    border-radius: 12px;
+    position: relative;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    flex-direction: column;
+    max-height: 90vh;
+  }
+
+  .close-btn {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: white;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+    transition: all 0.2s ease;
+  }
+
+  .close-btn svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .close-btn:hover {
+    background: rgba(0, 0, 0, 0.9);
+    transform: scale(1.05);
+  }
+
+  .modal-image {
+    width: 100%;
+    aspect-ratio: 16/9;
+  }
+
+  .modal-body {
+    padding: 2rem;
+    overflow-y: auto;
+  }
+
+  .modal-body h3 {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+  }
+
+  .modal-body p {
+    color: var(--text-secondary);
+    margin-bottom: 1.5rem;
+    line-height: 1.6;
+    font-size: 1.05rem;
+  }
+
+  .hidden { display: none !important; }
 </style>
 
 <script>
@@ -153,7 +518,7 @@ function getTechColorClass(techTags: string[]): string {
     const mDemo = document.getElementById('modal-demo');
     const mGithub = document.getElementById('modal-github');
 
-    // Modal interaction
+    // Modal behavior
     cards.forEach(card => {
       card.addEventListener('click', (e) => {
         const target = e.target as HTMLElement;
@@ -246,8 +611,6 @@ function getTechColorClass(techTags: string[]): string {
         }
       };
 
-      let isInitialLoad = true;
-
       const goToPage = (page: number) => {
         currentPage = page;
         const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
@@ -265,14 +628,6 @@ function getTechColorClass(techTags: string[]): string {
         if (nextBtn) nextBtn.disabled = currentPage === totalPages;
 
         renderPaginationButtons();
-
-        if (!isInitialLoad) {
-          const workSection = document.getElementById('work');
-          if (workSection) {
-            workSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-          }
-        }
-        isInitialLoad = false;
       };
 
       if (prevBtn) {

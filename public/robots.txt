@@ -1,0 +1,27 @@
+# Allow all search engines & AI crawlers
+User-agent: *
+Allow: /
+
+# Explicit AI Crawlers Access
+User-agent: GPTBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: Cohere-ai
+Allow: /
+
+# LLM Standard documentation
+# https://llmstxt.org/
+
+Sitemap: https://portfolio-taupe-seven-94.vercel.app/sitemap.xml
